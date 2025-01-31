@@ -1,0 +1,169 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+@font-face {
+    font-family: 'minecraft';
+    src: url('font.ttf');
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    height: 100vh;
+    padding: 4% 5%;
+
+    background-color: #14131a;
+    color: white;
+
+    font-family: 'Poppins', sans-serif;
+}
+
+.container {
+    height: 100%;
+    border-radius: 1rem;
+    background-color: #242231;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+}
+
+
+
+/* STATUS BAR */
+
+.status-bar {
+    padding: 1rem 2rem;
+    width: 100%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    background-color: #0003;
+}
+
+.info {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
+.status {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.8rem;
+
+    background-color: #225522;
+    border-radius: .3rem;
+
+    padding: .2rem .5rem;
+
+    .text {
+        vertical-align: middle;
+        text-transform: capitalize;
+        color: #fffd;
+    }
+}
+
+.account .username {
+    height: 100%;
+    display: flex;
+    align-items: center;
+
+    font-size: 1.4rem;
+    font-weight: 500;
+}
+
+.btn {
+    outline: none;
+
+    padding: .4rem 1rem;
+
+    border: 1px solid #446;
+    border-radius: .4rem;
+    background-color: #99F2;
+    color: white;
+
+    color: #fffa;
+    font-size: 1rem;
+    font-weight: 500;
+    font-family: 'Poppins', sans-serif;
+
+    transition: .1s ease;
+}
+
+.btn:hover {
+    background-color: #446;
+    cursor: pointer;
+}
+
+
+/* CHAT BOX */
+
+.chat-box {
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+
+    font-family: 'minecraft', 'consolas', 'Poppins';
+}
+
+.messages {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column-reverse;
+
+    overflow-y: auto;
+}
+
+.messages .msg {
+    transform-origin: top;
+    animation: msgFadeIn .3s ease-in-out;
+}
+
+@keyframes msgFadeIn {
+    from {
+        transform: scaleY(0%);
+    }
+
+    to {
+        transform: scaleY(100%);
+    }
+}
+
+.new-message {
+    padding: 1rem;
+    background-color: #0003;
+}
+
+.new-message form {
+    width: 100%;
+
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
+.new-message form .message-content {
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    outline: none;
+
+    color: white;
+}
+
+.new-message form .message-content,
+.new-message form .message-content::placeholder {
+    font-family: 'minecraft', 'consolas', 'Poppins';
+}
