@@ -8,22 +8,17 @@ function log(msg) {
     console.log(msg);
 }
 
-let bot;
-createBot();
-bindBotEvents();
+initBot();
 
-function createBot() {
-    if (bot) bot.end();
-    log("Creating bot...");
-    bot = mineflayer.createBot({
+function initBot() {
+    log("Creating new bot...");
+    const bot = mineflayer.createBot({
         version: '1.18.2',
         host: process.env.host,
         port: process.env.port,
         username: process.env.name,
     });
-}
 
-function bindBotEvents() {
     bot.once("spawn", () => {
         // mineflayerViewer(bot, { port: 8080, firstPerson: true })
         console.log("We're alive!")
@@ -55,8 +50,7 @@ function bindBotEvents() {
         log('Connection lost: ' + reason);
         log('ATTEMPTING RECONNECT IN 5 SECONDS...')
         setTimeout(() => {
-            createBot();
-            bindBotEvents();
+            initBot();
         }, 5000);
     });
 }
