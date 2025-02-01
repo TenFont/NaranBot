@@ -2,49 +2,63 @@ const mineflayer = require('mineflayer');
 
 require('dotenv').config();
 
-console.log(`${process.env.host}:${process.env.port}`);
-
-const bot = mineflayer.createBot({
-    version: '1.18.2',
-    host: process.env.host,
-    port: process.env.port,
-    username: process.env.name,
-});
-
-// const mineflayerViewer = require('prismarine-viewer').mineflayer
-
-bot.once("spawn", () => {
-    // mineflayerViewer(bot, { port: 8080, firstPerson: true })
-    console.log("We're alive!")
-});
-
-bot.on("messagestr", (message) => {
-    log(message);
-
-    if (message == ("LOGIN » Please login with /login <password>")) {
-        console.log(`/login ${process.env.password}`);
-        bot.chat(`/login ${process.env.password}`);
-    } else if (message.startsWith("JartexNetwork » You are connected to Lobby")) {
-        bot.chat(`/server`);
-        bot.on("windowOpen", (window) => {
-            setTimeout(() => {
-                bot.simpleClick.leftMouse(19);
-            }, 1000);
-        });
-    }
-});
-
-bot.on("kicked", (reason) => {
-    console.log(`The bot was kicked with reason: ${reason}`);
-    process.exit(1);
-});
-
-
-
 let chatlog = [];
 function log(msg) {
     chatlog.push(msg);
     console.log(msg);
+}
+
+let bot;
+createBot();
+bindBotEvents();
+
+function createBot() {
+    if (bot) bot.end();
+    log("Creating bot...");
+    bot = mineflayer.createBot({
+        version: '1.18.2',
+        host: process.env.host,
+        port: process.env.port,
+        username: process.env.name,
+    });
+}
+
+function bindBotEvents() {
+    bot.once("spawn", () => {
+        // mineflayerViewer(bot, { port: 8080, firstPerson: true })
+        console.log("We're alive!")
+    });
+    
+    bot.on("messagestr", (message) => {
+        log(message);
+    
+        if (message == ("LOGIN » Please login with /login <password>")) {
+            log("[SYSTEM] Logging in...");
+            bot.chat(`/login ${process.env.password}`);
+        } else if (message.startsWith("JartexNetwork » You are connected to Lobby")) {
+            log("[SYSTEM] Opening server selector...");
+            bot.chat(`/server`);
+            bot.on("windowOpen", (window) => {
+                setTimeout(() => {
+                    log("[SYSTEM] Clicking on survival icon...");
+                    bot.simpleClick.leftMouse(19);
+                }, 1000);
+            });
+        }
+    });
+    
+    bot.on("kicked", (reason) => {
+        log(`The bot has been kicked: ${reason}`);
+    });
+    
+    bot.once('end', reason => {
+        log('Connection lost: ' + reason);
+        log('ATTEMPTING RECONNECT IN 5 SECONDS...')
+        setTimeout(() => {
+            createBot();
+            bindBotEvents();
+        }, 5000);
+    });
 }
 
 // SITE
