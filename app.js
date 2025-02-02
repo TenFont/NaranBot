@@ -8,11 +8,12 @@ function log(msg) {
     console.log(msg);
 }
 
+let bot;
 initBot();
 
 function initBot() {
     log("Creating new bot...");
-    const bot = mineflayer.createBot({
+    bot = mineflayer.createBot({
         version: '1.18.2',
         host: process.env.host,
         port: process.env.port,
