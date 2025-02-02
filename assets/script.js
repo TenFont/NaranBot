@@ -5,12 +5,12 @@ function addMessage(msg) {
 }
 
 $('.reconnect').click(() => {
-    $.post('/restart');
+    $.post(`/${username}/restart`);
 });
 
 let processed = 0;
 
-$.getJSON('/chatlogs', data => {
+$.getJSON(`/${username}/chatlogs`, data => {
     if (data.length == 0) return;
     if (data.length > 500) {
         processed = data.length - 500;
@@ -28,7 +28,7 @@ $.getJSON('/chatlogs', data => {
 });
 
 setInterval(() => {
-    $.getJSON('/chatlogs', data => {
+    $.getJSON(`/${username}/chatlogs`, data => {
         data = data.splice(processed);
         if (data.length == 0) return;
         data.forEach(element => {
@@ -50,7 +50,7 @@ $('.new-message form').submit(function(e) {
     e.preventDefault();
     $.ajax({
         type: 'POST',
-        url: '/chat',
+        url: `/${username}/chat`,
         data: $(this).serialize()
     });
     this.reset();

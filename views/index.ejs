@@ -6,8 +6,13 @@
     <title>GenBot</title>
 
     <link rel="stylesheet" href="/style.css">
+
+    <script>
+        const username = "<%= locals.account.username %>";
+    </script>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="script.js" defer></script>
+    <script src="/script.js" defer></script>
 </head>
 <body>
     <div class="container">
@@ -27,7 +32,8 @@
         <div class="chat-box">
             <div class="messages"></div>
             <div class="new-message">
-                <form action="/chat" method="post">
+                <!-- <form action="/<%= locals.account.username %>/chat" method="post"> -->
+                <form>
                     <input class="message-content" type="text" name="message" id="chat-message" placeholder="Enter message here..." autocomplete="off">
                     <input class="btn send-message" type="submit" value="Enter">
                 </form>

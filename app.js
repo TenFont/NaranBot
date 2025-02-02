@@ -2,26 +2,39 @@ const mineflayer = require('mineflayer');
 
 require('dotenv').config();
 
-let chatlog = [];
-function log(msg) {
-    chatlog.push(msg);
-    console.log(msg);
-}
+const express = require('express');
+const app = express();
 
-let bot;
-initBot();
+app.set('view engine', 'ejs');
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(__dirname + '/assets'));
 
-function initBot() {
-    log("Creating new bot...");
-    bot = mineflayer.createBot({
+let accounts = (process.env.name).split(',');
+let timeout = 0;
+accounts.forEach(username => {
+    setTimeout(() => {
+        initBot(username, process.env.host, process.env.port);
+    }, timeout);
+    timeout += 1000;
+});
+app.listen(8080);
+
+function initBot(username, host, port) {    
+    const chatlog = [];
+    const log = (msg) => {
+        chatlog.push(msg);
+        console.log(`[${username}] ${msg}`);
+    };
+
+    log(`Creating new bot...`);
+    const bot = mineflayer.createBot({
         version: '1.18.2',
-        host: process.env.host,
-        port: process.env.port,
-        username: process.env.name,
+        host: host,
+        port: port,
+        username: username,
     });
 
     bot.once("spawn", () => {
-        // mineflayerViewer(bot, { port: 8080, firstPerson: true })
         console.log("We're alive!")
     });
     
@@ -51,42 +64,36 @@ function initBot() {
         log('Connection lost: ' + reason);
         log('ATTEMPTING RECONNECT IN 5 SECONDS...')
         setTimeout(() => {
-            initBot();
+            initBot(username, host, port);
         }, 5000);
     });
-}
 
-// SITE
 
-const express = require('express');
-const app = express();
+    // http
 
-app.set('view engine', 'ejs');
+    const router = express.Router();
+    app.use(`/${username}/`, router);
 
-app.use(express.static(__dirname + '/assets'));
-app.use(express.urlencoded({ extended: true }));
-
-app.get('/', (req, res) => {
-    res.render('index', {
-        status: 'online',
-        account: {
-            username: process.env.name
-        }
+    router.get(`/`, (req, res) => {
+        res.render('index', {
+            status: 'online',
+            account: {
+                username: username
+            }
+        });
     });
-});
-
-app.get('/chatlogs', (req, res) => {
-    res.json(chatlog);
-});
-
-app.post('/chat', (req, res) => {
-    bot.chat(req.body.message);
-    res.sendStatus(200);
-});
-
-app.post('/restart', (req, res) => {
-    bot.end('Restarting...');
-    res.sendStatus(200);
-});
-
-app.listen(8080);
+    
+    router.get(`/chatlogs`, (req, res) => {
+        res.json(chatlog);
+    });
+    
+    router.post(`/chat`, (req, res) => {
+        bot.chat(req.body.message);
+        res.sendStatus(200);
+    });
+    
+    router.post(`/restart`, (req, res) => {
+        bot.end('Restarting...');
+        res.sendStatus(200);
+    });
+}
